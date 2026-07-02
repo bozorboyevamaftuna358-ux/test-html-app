@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Amaliy Test - 20 Savol</title>
+    <style>
+        :root {
+            --primary-color: #e44d26; /* HTML5 to'q sariq rangi */
+            --secondary-color: #f16529;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            font-family: 'Courier New', Courier, monospace;
+            height: 120px;
+            resize: none;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+        }
+
+        button {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .score-board {
+            text-align: left;
+            margin-top: 20px;
+            background: #eee;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="login-screen">
+            <h1>HTML Amaliy Testi</h1>
+            <p>HTML bo'yicha 20 ta amaliy savoldan iborat testga xush kelibsiz. Davom etish uchun ismingizni kiriting:</p>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Ismingizni yozing..." required>
+            </div>
+            <button id="start-btn">Testni boshlash</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div class="quiz-header">
+                <span id="welcome-user">Foydalanuvchi: </span>
+                <span id="question-counter">Savol: 1/20</span>
+            </div>
+            <h3 id="question-text" style="margin-bottom: 15px; text-align: left;">Savol matni</h3>
+            <p style="font-size: 0.9rem; color: #666; font-style: italic; text-align: left;">Javobni tegishli HTML kodi ko'rinishida yozing:</p>
+            <div class="input-group">
+                <textarea id="code-answer" placeholder=""></textarea>
+            </div>
+            <button id="submit-btn">Javobni tekshirish</button>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h1>Test Yakunlandi!</h1>
+            <p id="result-message">Tabriklaymiz!</p>
+            <div class="score-board">
+                <p><strong>To'g'ri javoblar:</strong> <span id="correct-count">0</span> / 20</p>
+                <p><strong>Noto'g'ri javoblar:</strong> <span id="wrong-count">0</span> / 20</p>
+            </div>
+            <button id="restart-btn">Qayta boshlash</button>
+        </div>
+    </div>
+
+    <script>
+        // 20 ta HTMLga oid savollar bazasi
+        const questions = [
+            {
+                question: "1. HTML hujjatning eng yuqori qismida yoziladigan, brauzerga hujjat turini bildiruvchi deklaratsiyani yozing.",
+                correctAnswer: "<!DOCTYPEhtml>"
+            },
+            {
+                question: "2. Butun HTML sahifani o'z ichiga oluvchi asosiy ildiz (root) tegini yozing (ochilish va yopilishini ko'rsating).",
+                correctAnswer: "<html></html>"
+            },
+            {
+                question: "3. Sahifaning sarlavhasi (brauzer vkladkasidagi matn) qaysi teg ichida yoziladi?",
+                correctAnswer: "<title></title>"
+            },
+            {
+                question: "4. Veb-sahifaning foydalanuvchiga ko'rinadigan barcha asosiy qismi qaysi teg ichiga joylashtiriladi?",
+                correctAnswer: "<body></body>"
+            },
+            {
+                question: "5. Eng muhim va eng katta o'lchamdagi sarlavha (heading) yaratuvchi tegni yozing.",
+                correctAnswer: "<h1></h1>"
+            },
+            {
+                question: "6. Oddiy matnli paragraf (abzats) yaratuvchi tegni yozing.",
+                correctAnswer: "<p></p>"
+            },
+            {
+                question: "7. Matn ostiga chiziq chizmasdan, uni shunchaki qalin (bold) qilib ko'rsatuvchi eng ko'p ishlatiladigan tegni yozing.",
+                correctAnswer: "<strong></strong>"
+            },
+            {
+                question: "8. Matnni kursiv (ma'noli urg'u berilgan) ko'rinishga keltiruvchi tegni yozing.",
+                correctAnswer: "<em></em>"
+            },
+            {
+                question: "9. Matn ichidan yangi qatorga o'tish (line break) uchun ishlatiladigan yopilmaydigan yagona tegni yozing.",
+                correctAnswer: "<br>"
+            },
+            {
+                question: "10. Sahifaga 'rasm.jpg' nomli rasmni joylashtiruvchi kodni yozing (faqat img tegi va src atributidan foydalaning).",
+                correctAnswer: "<imgsrc=\"rasm.jpg\">"
+            },
+            {
+                question: "11. 'https://google.com' saytiga olib boruvchi havola (link) yarating. Havola matni 'Google' bo'lsin.",
+                correctAnswer: "<ahref=\"https://google.com\">Google</a>"
+            },
+            {
+                question: "12. Tartibsiz, ya'ni nuqtalar bilan chiquvchi ro'yxat (unordered list) yaratish uchun qaysi asosiy teg ochiladi?",
+                correctAnswer: "<ul></ul>"
+            },
+            {
+                question: "13. Tartiblangan, ya'ni raqamlar bilan chiquvchi ro'yxat (ordered list) yaratish tegi qaysi?",
+                correctAnswer: "<ol></ol>"
+            },
+            {
+                question: "14. Ro'yxat elementlarini (list item) yaratishda qaysi teg ishlatiladi?",
+                correctAnswer: "<li></li>"
+            },
+            {
+                question: "15. HTML sahifada jadval (table) yaratishda qator (table row) yaratuvchi tegni yozing.",
+                correctAnswer: "<tr></tr>"
+            },
+            {
+                question: "16. Jadval qatori ichida oddiy ma'lumot katakchasini (table data) yaratuvchi tegni yozing.",
+                correctAnswer: "<td></td>"
+            },
+            {
+                question: "17. Foydalanuvchidan oddiy matn kiritishni qabul qiluvchi bir qatorli maydon yarating (faqat input tegi va type atributidan foydalaning).",
+                correctAnswer: "<inputtype=\"text\">"
+            },
+            {
+                question: "18. Formada ma'lumotlarni jo'natish (submit) vazifasini bajaruvchi tugma (button) yarating.",
+                correctAnswer: "<buttontype=\"submit\"></button>"
+            },
+            {
+                question: "19. Sahifani mantiqiy bloklarga (konteynerga) ajratish uchun ishlatiladigan eng keng tarqalgan blok element tegi qaysi?",
+                correctAnswer: "<div></div>"
+            },
+            {
+                question: "20. HTML kod ichida sharh (comment) yozish sintaksisini ko'rsating (ichiga istalgan so'z yozishingiz mumkin).",
+                correctAnswer: ""
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userName = "";
+        let correctAnswersCount = 0;
+        let wrongAnswersCount = 0;
+
+        const loginScreen = document.getElementById('login-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        
+        const usernameInput = document.getElementById('username');
+        const startBtn = document.getElementById('start-btn');
+        
+        const welcomeUser = document.getElementById('welcome-user');
+        const questionCounter = document.getElementById('question-counter');
+        const questionText = document.getElementById('question-text');
+        const codeAnswer = document.getElementById('code-answer');
+        const submitBtn = document.getElementById('submit-btn');
+        
+        const resultMessage = document.getElementById('result-message');
+        const correctCount = document.getElementById('correct-count');
+        const wrongCount = document.getElementById('wrong-count');
+        const restartBtn = document.getElementById('restart-btn');
+
+        startBtn.addEventListener('click', () => {
+            userName = usernameInput.value.trim();
+            if (userName === "") {
+                alert("Iltimos, ismingizni kiriting!");
+                return;
+            }
+            
+            loginScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            welcomeUser.textContent = `Foydalanuvchi: ${userName}`;
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                questionCounter.textContent = `Savol: ${currentQuestionIndex + 1}/${questions.length}`;
+                questionText.textContent = questions[currentQuestionIndex].question;
+                codeAnswer.value = ""; 
+            } else {
+                showResults();
+            }
+        }
+
+        submitBtn.addEventListener('click', () => {
+            // Tekshirish jarayonida foydalanuvchi yozgan koddagi barcha bo'shliqlar, qo'shtirnoqlar (bir xil ko'rinishga keltirish uchun) tozalanadi
+            let userAnswer = codeAnswer.value.trim().replace(/\s+/g, '').replace(/'/g, '"'); 
+            let correctAnswerClean = questions[currentQuestionIndex].correctAnswer.replace(/\s+/g, '').replace(/'/g, '"');
+
+            // 20-savol kabi ichiga har xil narsa yozilishi mumkin bo'lgan sharhlarni tekshirish uchun sodda qoida
+            if (currentQuestionIndex === 19) {
+                if (userAnswer.startsWith("")) {
+                    userAnswer = "";
+                }
+            }
+
+            if (userAnswer === correctAnswerClean) {
+                correctAnswersCount++;
+                alert("To'g'ri javob! 🎉");
+            } else {
+                wrongAnswersCount++;
+                alert("Noto'g'ri javob. Avtomatik ravishda keyingi savolga o'tildi.");
+            }
+
+            currentQuestionIndex++;
+            loadQuestion();
+        });
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            resultMessage.textContent = `Rahmat, ${userName}! HTML asoslari testini yakunladingiz.`;
+            correctCount.textContent = correctAnswersCount;
+            wrongCount.textContent = wrongAnswersCount;
+        }
+
+        restartBtn.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            correctAnswersCount = 0;
+            wrongAnswersCount = 0;
+            usernameInput.value = "";
+            resultScreen.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
